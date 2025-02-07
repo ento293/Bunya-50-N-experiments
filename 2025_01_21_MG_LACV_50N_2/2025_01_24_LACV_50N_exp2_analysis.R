@@ -2,20 +2,14 @@ library(tidyverse)
 library(readxl)
 library(patchwork)
 
-df <- read_excel("2025_01_24_LACV_50N_exp2_tidy.xlsx")
+df <- read_excel("./2025_01_24_LACV_50N_exp2_tidy.xlsx")
 
 # remove L-only from the data frame and use N-only instead
 # df <- df %>% 
 #   filter(!(N == "LACV L only"))
 
-# calculate fluc averages
-df_fLuc_avg <- df %>% group_by(N) %>% summarize(n=n(), fLuc_avg = mean(fLuc))
-
-# join in fLuc averages to main df
-df <- left_join(df, df_fLuc_avg)
-
 # calculate nLuc / fLuc
-df <- df %>% mutate(nLuc_rel_fLuc = nLuc / fLuc_avg)
+df <- df %>% mutate(nLuc_rel_fLuc = nLuc / fLuc)
 
 # calculate N-only nLuc
 df$bg_nLuc          <- df %>% filter(N == "LACV N only") %>% summarize(bg_nLuc = mean(nLuc)) %>% pull(bg_nLuc)
@@ -30,7 +24,7 @@ df <- df %>% mutate(nLuc_rel_bg = nLuc / bg_nLuc,
 # ---------------------
 
 # pairwise % identity between GPCs involved
-dist_df <- read_excel("./2025_N_protein_distances.xlsx")
+dist_df <- read_excel("../Orthobunya_metadata.xlsx")
 
 df <- left_join(df, dist_df, by=c("N_pMDS" = "pMDS"))
 
@@ -46,18 +40,24 @@ df_norm_avg <- df %>%
             LACV_pct_id  = mean(Pct_ID_LACV_N),
             .groups="drop") 
 
-
+# Set y axis min and max values for cases when std_dev > mean, 
+# This way, negative values won't be undefined by the log scale in ggplot
+yaxis_min <- 1e-1
+yaxis_max <- 1e5
 
 # singly normalized luminescence - to N-only
 ggplot(df_norm_avg) +
   geom_point(aes(x=LACV_pct_id, y=mean_lum), shape=21, 
              fill="slateblue", color="black", size=3, stroke=0.25) +
-  geom_errorbar(aes(x=LACV_pct_id, ymin=mean_lum - sd_lum, ymax=mean_lum + sd_lum),
-                linewidth=0.25, alpha=0.5, color="slateblue") + geom_text(aes(x=LACV_pct_id, y=mean_lum, label=N), 
-                                                                          size=2.5, color="grey60", 
-                                                                          nudge_x=3, 
-                                                                          nudge_y=0, 
-                                                                          check_overlap = F ) +
+  geom_errorbar(aes(x=LACV_pct_id, 
+                    ymin = ifelse((mean_lum - sd_lum) < yaxis_min, yaxis_min, mean_lum - sd_lum),
+                    ymax = ifelse((mean_lum + sd_lum) > yaxis_max, yaxis_max, mean_lum + sd_lum)),
+                linewidth=0.25, alpha=0.5, color="slateblue") + 
+  geom_text(aes(x=LACV_pct_id, y=mean_lum, label=N), 
+            size=2.5, color="grey60", 
+            nudge_x=3, 
+            nudge_y=0, 
+            check_overlap = F ) +
   xlab("Pairwise AA identity of N protein to LACV N protein (%)") +
   ylab("nLuc relative N-only cells") +
   scale_y_log10() +
@@ -65,14 +65,15 @@ ggplot(df_norm_avg) +
   ggtitle("Activity of 50 N proteins with LACV L", subtitle="January 23, 2025")
 
 # save as PDF
-ggsave("2025_01_23_LACV_51N_results_singly_normalized.pdf", units="in", width=10, height=7.5)
+ggsave("2025_02_07_LACV_51N_results_singly_normalized.pdf", units="in", width=10, height=7.5)
 
 # doubly normalized luminescence (normalize to N-only and fLuc)
 ggplot(df_norm_avg) +
   geom_point(aes(x=LACV_pct_id, y=mean_rel_lum), shape=21, 
              fill="slateblue", color="black", size=3, stroke=0.25) +
-  geom_errorbar(aes(x=LACV_pct_id, ymin=mean_rel_lum - sd_rel_lum, 
-                    ymax=mean_rel_lum + sd_rel_lum),
+  geom_errorbar(aes(x=LACV_pct_id, 
+                    ymin = ifelse((mean_rel_lum - sd_rel_lum) < yaxis_min, yaxis_min, mean_rel_lum - sd_rel_lum),
+                    ymax = ifelse((mean_rel_lum + sd_rel_lum) > yaxis_max, yaxis_max, mean_rel_lum + sd_rel_lum)),
                 linewidth=0.25, alpha=0.5, color="slateblue") +
   geom_text(aes(x=LACV_pct_id, y=mean_rel_lum, label=N), 
             size=2.5, color="grey60", 
@@ -86,4 +87,4 @@ ggplot(df_norm_avg) +
   ggtitle("Activity of 50 N proteins with LACV L", subtitle="January 23, 2025")
 
 # save as PDF
-ggsave("2025_01_23_LACV_51N_results_doubly_normalized.pdf", units="in", width=10, height=7.5)
+ggsave("2025_02_07_LACV_51N_results_doubly_normalized.pdf", units="in", width=10, height=7.5)
