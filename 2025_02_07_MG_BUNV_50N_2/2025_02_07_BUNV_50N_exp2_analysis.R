@@ -2,7 +2,7 @@ library(tidyverse)
 library(readxl)
 library(patchwork)
 
-df <- read_excel("./2025_01_31_BUNV_50N_exp1_tidy.xlsx")
+df <- read_excel("./2025_02_07_BUNV_50N_exp2_tidy.xlsx")
 
 # remove L-only from the data frame and use N-only instead
 # df <- df %>% 
@@ -63,10 +63,10 @@ ggplot(df_norm_avg) +
   ylab("nLuc relative N-only cells") +
   scale_y_log10() +
   theme_bw()  +
-  ggtitle("Activity of 50 N proteins with BUNV L", subtitle="January 31, 2025")
+  ggtitle("Activity of 50 N proteins with BUNV L", subtitle="February 07, 2025")
 
 # save as PDF
-ggsave("2025_02_07_BUNV_50N_results_singly_normalized.pdf", units="in", width=10, height=7.5)
+ggsave("2025_02_07_BUNV_50N_exp2_results_singly_normalized.pdf", units="in", width=10, height=7.5)
 
 # doubly normalized luminescence (normalize to N-only and fLuc)
 ggplot(df_norm_avg) +
@@ -85,7 +85,7 @@ ggplot(df_norm_avg) +
   ylab("nLuc relative to fLuc relative to N-only cells") +
   scale_y_log10() +
   theme_bw()  +
-  ggtitle("Activity of 50 N proteins with BUNV L", subtitle="January 31, 2025")
+  ggtitle("Activity of 50 N proteins with BUNV L", subtitle="Feburary 07, 2025")
 
 # save as PDF
-ggsave("2025_02_07_BUNV_50N_results_doubly_normalized.pdf", units="in", width=10, height=7.5)
+ggsave("2025_02_07_BUNV_exp2_50N_results_doubly_normalized.pdf", units="in", width=10, height=7.5)
