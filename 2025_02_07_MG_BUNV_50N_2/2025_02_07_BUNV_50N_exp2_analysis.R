@@ -40,6 +40,9 @@ df_norm_avg <- df %>%
             BUNV_pct_id  = mean(Pct_ID_BUNV_N),
             .groups="drop") 
 
+# save dataframe with mean luminescence and mean relative luminescence
+write.csv(df_norm_avg, "BUNV_50N_exp2_normalized_relative_luminescence.csv", row.names = FALSE)
+
 # Set y axis min and max values for cases when std_dev > mean, 
 # This way, negative values won't be undefined by the log scale in ggplot
 yaxis_min <- 1e-1
