@@ -2,7 +2,7 @@ library(tidyverse)
 library(readxl)
 library(patchwork)
 
-df <- read_excel("./2025_03_04_KAIRI_50N_exp1_tidy.xlsx")
+df <- read_excel("./2025_04_03_KAIRI_50N_exp2_tidy.xlsx")
 
 # remove L-only from the data frame and use N-only instead
 # df <- df %>% 
@@ -41,7 +41,7 @@ df_norm_avg <- df %>%
             .groups="drop") 
 
 # save dataframe with mean luminescence and mean relative luminescence
-write.csv(df_norm_avg, "KAIRI_50N_exp1_normalized_relative_luminescence.csv", row.names = FALSE)
+write.csv(df_norm_avg, "KAIRI_50N_exp2_normalized_relative_luminescence.csv", row.names = FALSE)
 
 # Set y axis min and max values for cases when std_dev > mean, 
 # This way, negative values won't be undefined by the log scale in ggplot
@@ -66,10 +66,10 @@ ggplot(df_norm_avg) +
   ylab("nLuc relative N-only cells") +
   scale_y_log10() +
   theme_bw()  +
-  ggtitle("Activity of 50 N proteins with Kairi L", subtitle="March 04, 2025")
+  ggtitle("Activity of 50 N proteins with Kairi L", subtitle="April 03, 2025")
 
 # save as PDF
-ggsave("2025_03_10_KAIRI_50N_exp1_results_singly_normalized.pdf", units="in", width=10, height=7.5)
+ggsave("2025_04_09_KAIRI_50N_exp2_results_singly_normalized.pdf", units="in", width=10, height=7.5)
 
 # doubly normalized luminescence (normalize to N-only and fLuc)
 ggplot(df_norm_avg) +
@@ -88,7 +88,7 @@ ggplot(df_norm_avg) +
   ylab("nLuc relative to fLuc relative to N-only cells") +
   scale_y_log10(breaks = c(1, 10, 100, 1000)) +
   theme_bw()  +
-  ggtitle("Activity of 50 N proteins with Kairi L", subtitle="March 04, 2025")
+  ggtitle("Activity of 50 N proteins with Kairi L", subtitle="April 03, 2025")
 
 # save as PDF
-ggsave("2025_03_10_KAIRI_exp1_50N_results_doubly_normalized.pdf", units="in", width=10, height=7.5)
+ggsave("2025_04_03_KAIRI_exp2_50N_results_doubly_normalized.pdf", units="in", width=10, height=7.5)
