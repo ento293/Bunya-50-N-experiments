@@ -28,5 +28,5 @@ Bunya-50-N-experiments/
 
 ```
 ## Data Description
-Raw luminescence data for each plate is stored in each experiments ```/data``` subdirectory as ```.xlsx``` files. Compiled data is found in the same directory as ```experiment_name_tidy.xcel```. Metadata used to generate the plots is found in the ```shared``` subdirectory.
+Raw luminescence data for each plate is stored in each experiments ```/data``` subdirectory as ```.xlsx``` files. Compiled data is found in the same directory as ```experiment_name_tidy.xlsx```. Metadata used to generate the plots is found in the ```shared``` subdirectory.
 
