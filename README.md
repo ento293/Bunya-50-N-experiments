@@ -4,13 +4,17 @@ We cloned 50 helper plasmids that express N proteins. Then, using a minigenome a
 Data, analysis, and plots are shown here. 
 
 ## Directory structure
+
+```
 Bunya-50-N-experiments/
 ├── README.md
-├── scripts
-│   └── make_tidy.R
-│   └── make_plot
+├── shared
+│   └── make_tidy_function.R
+│   └── plot_functions.R
+│   └── metadata.xlsx
 ├── 2025_01_14_LACV_50N_with_NSs_exp1/
 │   ├── data/
+│   │   └── 2025_01_13_LACV_50N_exp1_plate_layout.docx
 │   │   └── 2025_01_16_LACV_50N_exp1_plate1.xlsx
 │   │   └── 2025_01_16_LACV_50N_exp1_plate2.xlsx
 │   │   └── 2025_01_16_LACV_50N_exp1_plate3.xlsx
@@ -20,9 +24,9 @@ Bunya-50-N-experiments/
 │       ├── 2025_01_16_LACV_50N_exp1_double_norm.pdf
 │       └── 2025_01_16_LACV_50N_exp1_single_norm.pdf
 ├── 2025_01_21_LACV_50N_with_NSs_exp2/
-│   ├── data/
-│   │   └── exp02_raw.csv
-│   ├── analysis.R
-│   └── plots/
-└── shared/
-    └── plot_functions.R   # shared ggplot2 functions used across experiments
+│   ├── etc
+
+```
+## Data Description
+Raw luminescence data for each plate is stored in each experiments ```/data``` subdirectory as ```.xlsx``` files. Compiled data is found in the same directory as ```experiment_name_tidy.xcel```. Metadata used to generate the plots is found in the ```shared``` subdirectory.
+
