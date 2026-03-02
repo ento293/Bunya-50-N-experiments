@@ -1,0 +1,67 @@
+library(tidyverse)
+library(readxl)
+library(readxl)
+library(writexl)
+library(glue)
+source("../../shared/plate_to_tidy_data.R")
+source("../../shared/make_plots.R")
+
+# Make tidy data ------------------------------------------------------
+
+plate_to_tidy(plate1 = "2025_02_06_BUNV_50N_exp2_plate1.xlsx",
+              plate2 = "2025_02_06_BUNV_50N_exp2_plate2.xlsx",
+              plate3 = "2025_02_06_BUNV_50N_exp2_plate3.xlsx",
+              template = "2025_02_07_BUNV_50N_exp2_tidy_template.xlsx",
+              output_file = "2025_02_07_BUNV_50N_exp2_tidy.xlsx")
+
+# Analysis ------------------------------------------------------------
+
+# define experiment name for saving data and plots
+experiment <- "BUNV_50N_with_NSs_exp2"
+
+# read in tidy data
+df <- read_excel("2025_02_07_BUNV_50N_exp2_tidy.xlsx")
+
+#### normalization ####
+
+# calculate nLuc / fLuc
+df <- df %>% mutate(nLuc_rel_fLuc = nLuc / fLuc)
+
+# calculate N-only nLuc average
+df$bg_nLuc          <- df %>% filter(N == "BUNV N only") %>% summarize(bg_nLuc = mean(nLuc)) %>% pull(bg_nLuc)
+df$bg_nLuc_rel_fLuc <- df %>% filter(N == "BUNV N only") %>% summarize(bg_nLuc_rel_fLuc = mean(nLuc_rel_fLuc)) %>% pull(bg_nLuc_rel_fLuc)
+
+# normalize to N-only nLuc average
+df <- df %>% mutate(nLuc_rel_bg = nLuc / bg_nLuc,
+                    nLuc_rel_fLuc_rel_bg = nLuc_rel_fLuc / bg_nLuc_rel_fLuc)
+
+#### activity vs. distance ####
+
+# get pairwise % identity between N proteins involved
+dist_df <- read_excel("../../shared/N_protein_metadata.xlsx")
+df <- left_join(df, dist_df, by=c("N_pMDS" = "pMDS"))
+
+# calculate averages of normalized luminescence
+# single normalized = lum (normalized to N-only)
+# double normalized = rel_lum (normalized to fLuc and N-only)
+df_norm_avg <- df %>% 
+  group_by (N) %>%
+  summarize(mean_lum     = mean(nLuc_rel_bg),
+            sd_lum       = sd(nLuc_rel_bg),
+            mean_rel_lum = mean(nLuc_rel_fLuc_rel_bg),
+            sd_rel_lum   = sd(nLuc_rel_fLuc_rel_bg),
+            BUNV_pct_id  = mean(Pct_ID_BUNV_N),
+            pMDS         = mean(N_pMDS),
+            .groups="drop") 
+
+# save dataframe with mean luminescence and mean relative luminescence
+write_xlsx(df_norm_avg, glue("{experiment}_normalized_data.xlsx"))
+
+# Make plots ----------------------------------------------------------
+
+make_plots(df = df_norm_avg,
+           experiment_name = "2025_02_07_BUNV_50N_with_NSs_exp2",
+           experiment_date = "February 7, 2025",
+           MG = "BUNV",
+           NSs_presence = "with"
+)
