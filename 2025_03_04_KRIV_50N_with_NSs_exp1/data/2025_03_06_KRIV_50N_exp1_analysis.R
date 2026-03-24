@@ -1,6 +1,5 @@
 library(tidyverse)
 library(readxl)
-library(readxl)
 library(writexl)
 library(glue)
 source("../../shared/plate_to_tidy_data.R")

@@ -46,7 +46,7 @@ extract_fLuc <- function(df) {
     select(all_of(as.character(2:11))) %>% # select columns
     as.matrix() %>% t() %>% as.vector() #transpose
   
-  extra <- df %>%
+  extra <- df %>% # last row has only 4 samples aka "extra"
     filter(row == 7) %>%
     select(all_of(as.character(2:5))) %>% 
     as.matrix() %>% t() %>% as.vector()

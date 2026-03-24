@@ -35,6 +35,7 @@ make_plots <- function(
     geom_errorbar(aes(x=.data[[paste0(MG, "_pct_id")]], 
                       ymin = ifelse((mean_lum - sd_lum) < yaxis_min, yaxis_min, mean_lum - sd_lum),
                       ymax = ifelse((mean_lum + sd_lum) > yaxis_max, yaxis_max, mean_lum + sd_lum)),
+                  width = 0.25,
                   linewidth=0.25, 
                   alpha=0.5, 
                   color = error_bar_color) + 
@@ -67,7 +68,8 @@ make_plots <- function(
     geom_errorbar(aes(x=.data[[paste0(MG, "_pct_id")]], 
                       ymin = ifelse((mean_rel_lum - sd_rel_lum) < yaxis_min, yaxis_min, mean_rel_lum - sd_rel_lum),
                       ymax = ifelse((mean_rel_lum + sd_rel_lum) > yaxis_max, yaxis_max, mean_rel_lum + sd_rel_lum)),
-                  linewidth=0.25, 
+                  width=0.25,
+                  linewidth = 0.25,
                   alpha=0.5, 
                   color = error_bar_color) +
     geom_text(aes(x=.data[[paste0(MG, "_pct_id")]], y=mean_rel_lum, label=N), 
